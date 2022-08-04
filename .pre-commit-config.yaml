@@ -1,0 +1,49 @@
+ci:
+    skip: ["eslint"]
+repos:
+    - repo: https://github.com/psf/black
+      rev: 22.6.0
+      hooks:
+          - id: black
+    - repo: https://github.com/asottile/reorder_python_imports
+      rev: v3.8.2
+      hooks:
+          - id: reorder-python-imports
+            args:
+                - "--application-directories=.:src"
+                - "--add-import=from __future__ import annotations"
+    - repo: https://github.com/PyCQA/flake8
+      rev: 5.0.2
+      hooks:
+          - id: flake8
+    - repo: https://github.com/asottile/pyupgrade
+      rev: v2.37.3
+      hooks:
+          - id: pyupgrade
+            args: ["--py36-plus"]
+    - repo: local
+      hooks:
+          - id: prettier
+            name: prettier
+            language: node
+            entry: prettier --write --list-different --ignore-unknown
+            additional_dependencies:
+                - "prettier@2.7.1"
+                - "prettier-plugin-svelte@2.7.0"
+                - "svelte@3.49.0"
+          - id: stylelint
+            name: stylelint
+            language: node
+            entry: stylelint --fix
+            files: \.(css|svelte)$
+            additional_dependencies:
+                - "stylelint@14.9.1"
+                - "stylelint-config-prettier@9.0.3"
+                - "stylelint-config-recess-order@3.0.0"
+                - "stylelint-config-standard@26.0.0"
+                - "postcss-html@1.5.0"
+          - id: eslint
+            name: eslint
+            language: node
+            entry: ./frontend/node_modules/eslint/bin/eslint.js --max-warnings 0
+            files: \.(js|ts|svelte)$
